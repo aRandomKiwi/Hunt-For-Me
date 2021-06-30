@@ -4,7 +4,7 @@
 
 <p align="center">
 	<a href="https://github.com/aRandomKiwi/Hunt-For-Me/releases">
-		<img src="https://img.shields.io/badge/release-3.5.0-4BC51D.svg?style=flat" alt="3.5.0" />
+		<img src="https://img.shields.io/badge/release-3.5.1-4BC51D.svg?style=flat" alt="3.5.1" />
     </a>
 	<img src="https://img.shields.io/github/downloads-pre/aRandomKiwi/Hunt-For-Me/total.svg?style=popout-square&color=green" alt="Github Total Downloads" />
 	<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=1593245720">

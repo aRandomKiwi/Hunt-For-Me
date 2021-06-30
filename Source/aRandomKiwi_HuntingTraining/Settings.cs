@@ -43,7 +43,7 @@ namespace aRandomKiwi.HFM
 
 
             var outRect = new Rect(inRect.x, inRect.y, inRect.width, inRect.height);
-            var scrollRect = new Rect(0f, 0f, inRect.width - 16f, inRect.height * 2.2f + 400+ (35 * ignoredRangedAttack.Count) + (35 * ignoredPreys.Count) + (35 * cats.Count));
+            var scrollRect = new Rect(0f, 0f, inRect.width - 16f, inRect.height * 2.2f + 400+ (50 * ignoredRangedAttack.Count) + (50 * ignoredPreys.Count) + (50 * cats.Count));
             Widgets.BeginScrollView(outRect, ref scrollPosition, scrollRect, true);
 
             list.Begin(scrollRect);
