@@ -99,7 +99,7 @@ namespace aRandomKiwi.HFM
                         hunting.prerequisites.Remove(x);
                 }
                 hunting.minBodySize = 0;
-                hunting.requiredTrainability = DefDatabase<TrainabilityDef>.GetNamed("Simple");
+                hunting.requiredTrainability = DefDatabase<TrainabilityDef>.GetNamed("None");
             }
             else
             {
