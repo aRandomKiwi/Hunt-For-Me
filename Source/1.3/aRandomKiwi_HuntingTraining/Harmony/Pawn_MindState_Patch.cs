@@ -276,50 +276,20 @@ namespace aRandomKiwi.HFM
             }
         }
 
-        [HarmonyPatch(typeof(Pawn_MindState), "Notify_DamageTaken")]
-        public class Notify_DamageTaken
+        [HarmonyPatch(typeof(Pawn_MindState), "StartManhunterBecauseOfPawnAction")]
+        public class Pawn_MindState_StartManhunterBecauseOfPawnAction
         {
             [HarmonyPrefix]
-            public static bool Replacement(Pawn_MindState __instance, DamageInfo dinfo)
+            public static bool Replacement(Pawn instigator, string letterTextKey, bool causedByDamage, Pawn ___pawn)
             {
-                __instance.mentalStateHandler.Notify_DamageTaken(dinfo);
-                if (dinfo.Def.ExternalViolenceFor(__instance.pawn))
+                //If the aggressor using one of HFM hunting jobs and the setting to disable prey revenge is enabled => do nothing
+                if(Settings.disallowManhunter && (instigator.CurJob != null && (instigator.CurJob.def.defName == "HuntTrained" 
+                    || instigator.CurJob.def.defName == "HuntTrainedAssist" 
+                    || instigator.CurJob.def.defName == "HuntForMe_CatGift")))
                 {
-                    __instance.lastHarmTick = Find.TickManager.TicksGame;
-                    if (__instance.pawn.Spawned)
-                    {
-                        Pawn pawn = dinfo.Instigator as Pawn;
-                        if (!__instance.mentalStateHandler.InMentalState 
-                            && dinfo.Instigator != null 
-                            && (pawn != null || dinfo.Instigator is Building_Turret) 
-                            && dinfo.Instigator.Faction != null 
-                            && (dinfo.Instigator.Faction.def.humanlikeFaction || (pawn != null && pawn.def.race.intelligence >= Intelligence.ToolUser)) 
-                            && __instance.pawn.Faction == null 
-                            && (__instance.pawn.RaceProps.Animal || __instance.pawn.IsWildMan()) 
-                            && (__instance.pawn.CurJob == null || __instance.pawn.CurJob.def != JobDefOf.PredatorHunt || dinfo.Instigator != ((JobDriver_PredatorHunt)__instance.pawn.jobs.curDriver).Prey) 
-                            && Rand.Chance(PawnUtility.GetManhunterOnDamageChance(__instance.pawn, dinfo.Instigator)))
-                        {
-                            //Log.Message("REVENGE");
-                            Traverse.Create(__instance).Method("CanStartFleeingBecauseOfPawnAction", __instance.pawn).GetValue<bool>();
-                            //Execution of the damage manHunting if the latter's prevention option is deactivated OR if there is no CompHunting OR has one but preyBusy False
-                            //In short, animals receiving damage and targeted by hunting are not sensitive to manHunting
-                            if (!Settings.disallowManhunter || __instance.pawn.TryGetComp<Comp_Hunting>() == null ||
-                                ( __instance.pawn.TryGetComp<Comp_Hunting>() != null && __instance.pawn.TryGetComp<Comp_Hunting>().huntingPreyBusy == 0) )
-                                Traverse.Create(__instance).Method("StartManhunterBecauseOfPawnAction","AnimalManhunterFromDamage").GetValue();
-                        }
-                        else if (dinfo.Instigator != null 
-                            && dinfo.Def.makesAnimalsFlee 
-                            && (bool)Traverse.Create(__instance).Method("CanStartFleeingBecauseOfPawnAction", __instance.pawn).GetValue() )
-                        {
-                            __instance.StartFleeingBecauseOfPawnAction(dinfo.Instigator);
-                        }
-                    }
-                    if (__instance.pawn.GetPosture() != PawnPosture.Standing)
-                    {
-                        __instance.lastDisturbanceTick = Find.TickManager.TicksGame;
-                    }
+                    return false;
                 }
-                return false;
+                return true;
             }
         }
     }
