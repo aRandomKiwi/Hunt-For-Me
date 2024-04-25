@@ -29,6 +29,12 @@ namespace aRandomKiwi.HFM
         public static bool sameSpeedPacks = false;
         public static bool showExtraTools = false;
 
+        public static bool SectionGeneralExpanded = false;
+        public static bool SectionListPreysToIgnoreExpanded = false;
+        public static bool SectionListForcedMeleeAttackExpanded = false;
+        public static bool SectionListConsideredCatsExpanded = false;
+
+
         public static Vector2 scrollPosition = Vector2.zero;
 
         public static void DoSettingsWindowContents(Rect inRect)
@@ -39,150 +45,200 @@ namespace aRandomKiwi.HFM
             inRect.yMax -= 15f;
 
             var defaultColumnWidth = (inRect.width - 50);
-            Listing_Standard list = new Listing_Standard() { ColumnWidth = defaultColumnWidth };
+            Listing_Standard list = new Listing_Standard() { };
 
+            Widgets.ButtonImage(new Rect((inRect.width / 2) - 90, inRect.y, 180, 144), Utils.texSettings, Color.white, Color.green);
 
-            var outRect = new Rect(inRect.x, inRect.y, inRect.width, inRect.height);
-            var scrollRect = new Rect(0f, 0f, inRect.width - 16f, inRect.height * 2.2f + 400+ (50 * ignoredRangedAttack.Count) + (50 * ignoredPreys.Count) + (50 * cats.Count));
+            var outRect = new Rect(inRect.x, inRect.y + 150, inRect.width, inRect.height - 150);
+            var scrollRect = new Rect(0f, 150f, inRect.width - 16f, inRect.height * 3f + 50);
             Widgets.BeginScrollView(outRect, ref scrollPosition, scrollRect, true);
 
             list.Begin(scrollRect);
 
-            //allow cats to bring back a gift
-            list.CheckboxLabeled("HuntingForMe_SettingsAllowCatGift".Translate(), ref allowCatGift);
+            list.Gap(10);
+            if (SectionGeneralExpanded)
+                GUI.color = Color.gray;
+            else
+                GUI.color = Color.green;
 
-            //authorize the packing of animals of different species
-            list.CheckboxLabeled("HuntingForMe_SettingsAllowDiffSpeciesPack".Translate(), ref allowDiffSpeciesPack);
-
-            //authorize the packing of animals of different species
-            list.CheckboxLabeled("HuntingForMe_SettingsDisallowManhunter".Translate(), ref disallowManhunter);
-
-            //allow remote attacks
-            list.CheckboxLabeled("HuntingForMe_SettingsAllowRangedAttack".Translate(), ref allowRangedAttack);
-
-            //Notify natural pack formation
-            list.CheckboxLabeled("HuntingForMe_SettingsNotifNewHuntingPack".Translate(), ref notifNewHuntingPack);
-
-            //Notify when animal goes solo hunting
-            list.CheckboxLabeled("HuntingForMe_SettingsNotifNewHunting".Translate(), ref notifNewHunting);
-
-            //Notify when animal goes solo hunting
-            list.CheckboxLabeled("HuntingForMe_SettingsDisallowHuntingWhenThreat".Translate(), ref disallowHuntingWhenThreat);
-
-
-            //Disable solo hunting
-            list.CheckboxLabeled("HuntingForMe_SettingsNoSoloHunt".Translate(), ref disableSoloHunting);
-
-            //Allow learning of 'Hunt' to all animals
-            list.CheckboxLabeled("HuntingForMe_SettingsAllowAllToHunt".Translate(), ref allowAllToHunt);
-            Utils.setAllowAllToHuntState();
-
-            list.CheckboxLabeled("HuntingForMe_SettingsSameSpeedPack".Translate(), ref sameSpeedPacks);
-
-            list.CheckboxLabeled("HuntingForMe_SettingsShowExtraTools".Translate(), ref showExtraTools);
-
-
-            list.Gap(10f);
-            list.GapLine();
-            //Maximum packing of hunters (by default 4)
-            //MaxHunterPack capping
-            if (maxHuntMPack > 30)
-                maxHuntMPack = 16;
-
-            list.Label("HuntingForMe_SettingsMaxAllowedHunterPacking".Translate(maxHuntMPack));
-            maxHuntMPack = (int)list.Slider(maxHuntMPack, 1, 30);
-
-            //Time to wait before being able to give a manual order (by default 8h)
-            list.Label("HuntingForMe_SettingsTimeToWaitBeforeTryHunt".Translate(Utils.TranslateTicksToTextIRLSeconds(timeToWaitBeforeTryHunt)));
-            timeToWaitBeforeTryHunt = (int)list.Slider(timeToWaitBeforeTryHunt, 2500, 120000);
-
-            //Max distance between the components of a pack
-            list.Label("HuntingForMe_SettingsMaxRadiusBetweenPackMembers".Translate(radiusBetweenPackMembers));
-            radiusBetweenPackMembers = list.Slider(radiusBetweenPackMembers, 1, 250);
-
-
-            list.GapLine();
-            list.Label("HuntingForMe_SettingsIgnoredPreys".Translate());
-            list.Gap(10f);
-
-            if (list.ButtonText("+"))
-                ignoredPreys.Add("");
-
-            if (list.ButtonText("-"))
+            if (list.ButtonText("HuntingForMe_SettingsGeneralSection".Translate()))
             {
-                if (ignoredPreys.Count != 0)
-                    ignoredPreys.RemoveLast();
+                SectionGeneralExpanded = !SectionGeneralExpanded;
+            }
+            GUI.color = Color.white;
+
+            if (SectionGeneralExpanded)
+            {
+                //---General settings
+                //allow cats to bring back a gift
+                list.CheckboxLabeled("HuntingForMe_SettingsAllowCatGift".Translate(), ref allowCatGift);
+
+                //authorize the packing of animals of different species
+                list.CheckboxLabeled("HuntingForMe_SettingsAllowDiffSpeciesPack".Translate(), ref allowDiffSpeciesPack);
+
+                //authorize the packing of animals of different species
+                list.CheckboxLabeled("HuntingForMe_SettingsDisallowManhunter".Translate(), ref disallowManhunter);
+
+                //allow remote attacks
+                list.CheckboxLabeled("HuntingForMe_SettingsAllowRangedAttack".Translate(), ref allowRangedAttack);
+
+                //Notify natural pack formation
+                list.CheckboxLabeled("HuntingForMe_SettingsNotifNewHuntingPack".Translate(), ref notifNewHuntingPack);
+
+                //Notify when animal goes solo hunting
+                list.CheckboxLabeled("HuntingForMe_SettingsNotifNewHunting".Translate(), ref notifNewHunting);
+
+                //Notify when animal goes solo hunting
+                list.CheckboxLabeled("HuntingForMe_SettingsDisallowHuntingWhenThreat".Translate(), ref disallowHuntingWhenThreat);
+
+
+                //Disable solo hunting
+                list.CheckboxLabeled("HuntingForMe_SettingsNoSoloHunt".Translate(), ref disableSoloHunting);
+
+                //Allow learning of 'Hunt' to all animals
+                list.CheckboxLabeled("HuntingForMe_SettingsAllowAllToHunt".Translate(), ref allowAllToHunt);
+                Utils.setAllowAllToHuntState();
+
+                list.CheckboxLabeled("HuntingForMe_SettingsSameSpeedPack".Translate(), ref sameSpeedPacks);
+
+                list.CheckboxLabeled("HuntingForMe_SettingsShowExtraTools".Translate(), ref showExtraTools);
+
+
+                list.Gap(10f);
+                list.GapLine();
+                //Maximum packing of hunters (by default 4)
+                //MaxHunterPack capping
+                if (maxHuntMPack > 30)
+                    maxHuntMPack = 16;
+
+                list.Label("HuntingForMe_SettingsMaxAllowedHunterPacking".Translate(maxHuntMPack));
+                maxHuntMPack = (int)list.Slider(maxHuntMPack, 1, 30);
+
+                //Time to wait before being able to give a manual order (by default 8h)
+                list.Label("HuntingForMe_SettingsTimeToWaitBeforeTryHunt".Translate(Utils.TranslateTicksToTextIRLSeconds(timeToWaitBeforeTryHunt)));
+                timeToWaitBeforeTryHunt = (int)list.Slider(timeToWaitBeforeTryHunt, 2500, 120000);
+
+                //Max distance between the components of a pack
+                list.Label("HuntingForMe_SettingsMaxRadiusBetweenPackMembers".Translate(radiusBetweenPackMembers));
+                radiusBetweenPackMembers = list.Slider(radiusBetweenPackMembers, 1, 250);
             }
 
-            //nbField = (int)list.Slider(nbField, 1, 100);
+            if (SectionListPreysToIgnoreExpanded)
+                GUI.color = Color.gray;
+            else
+                GUI.color = Color.green;
 
-
-            for (var i = 0; i != ignoredPreys.Count; i++)
+            if (list.ButtonText("HuntingForMe_SettingsIgnoredPreys".Translate()))
             {
-                list.Label("HuntingForMe_SettingsIgnoredPreyListNumber".Translate(i));
-                ignoredPreys[i] = list.TextEntry(ignoredPreys[i]);
-                list.Gap(4f);
+                SectionListPreysToIgnoreExpanded = !SectionListPreysToIgnoreExpanded;
+            }
+            GUI.color = Color.white;
+
+            if (SectionListPreysToIgnoreExpanded)
+            {
+                //---List of preys to ignore
+                list.Label("HuntingForMe_SettingsIgnoredPreys".Translate());
+                list.Gap(10f);
+
+                if (list.ButtonText("+"))
+                    ignoredPreys.Add("");
+
+                if (list.ButtonText("-"))
+                {
+                    if (ignoredPreys.Count != 0)
+                        ignoredPreys.RemoveLast();
+                }
+
+                //nbField = (int)list.Slider(nbField, 1, 100);
+
+
+                for (var i = 0; i != ignoredPreys.Count; i++)
+                {
+                    list.Label("HuntingForMe_SettingsIgnoredPreyListNumber".Translate(i));
+                    ignoredPreys[i] = list.TextEntry(ignoredPreys[i]);
+                    list.Gap(4f);
+                }
+
+                list.Gap(10f);
+                if (list.ButtonText("HuntingForMe_SettingsResetIgnoredPreys".Translate()))
+                    resetDefaultIgnoredPreys();
             }
 
-            list.Gap(10f);
-            if (list.ButtonText("HuntingForMe_SettingsResetIgnoredPreys".Translate()))
-                resetDefaultIgnoredPreys();
+            if (SectionListForcedMeleeAttackExpanded)
+                GUI.color = Color.gray;
+            else
+                GUI.color = Color.green;
 
-
-            // Ranged attacking creature exception list
-            list.Gap(25f);
-            list.GapLine();
-
-            list.Label("HuntingForMe_SettingsIgnoredRangedAttack".Translate());
-            list.Gap(10f);
-
-            if (list.ButtonText("+"))
-                ignoredRangedAttack.Add("");
-
-            if (list.ButtonText("-"))
+            if (list.ButtonText("HuntingForMe_SettingsIgnoredRangedAttack".Translate()))
             {
-                if (ignoredRangedAttack.Count != 0)
-                    ignoredRangedAttack.RemoveLast();
+                SectionListForcedMeleeAttackExpanded = !SectionListForcedMeleeAttackExpanded;
+            }
+            GUI.color = Color.white;
+
+            if (SectionListForcedMeleeAttackExpanded)
+            {
+                // Ranged attacking creature exception list
+                list.Label("HuntingForMe_SettingsIgnoredRangedAttack".Translate());
+                list.Gap(10f);
+
+                if (list.ButtonText("+"))
+                    ignoredRangedAttack.Add("");
+
+                if (list.ButtonText("-"))
+                {
+                    if (ignoredRangedAttack.Count != 0)
+                        ignoredRangedAttack.RemoveLast();
+                }
+
+                for (var i = 0; i != ignoredRangedAttack.Count; i++)
+                {
+                    list.Label("#" + i.ToString());
+                    ignoredRangedAttack[i] = list.TextEntry(ignoredRangedAttack[i]);
+                    list.Gap(4f);
+                }
+
+                list.Gap(10f);
+                if (list.ButtonText("HuntingForMe_SettingsResetIgnoredRangedAttack".Translate()))
+                    resetDefaultIgnoredRangedAttack();
             }
 
-            for (var i = 0; i != ignoredRangedAttack.Count; i++)
+            if (SectionListConsideredCatsExpanded)
+                GUI.color = Color.gray;
+            else
+                GUI.color = Color.green;
+
+            if (list.ButtonText("HuntingForMe_SettingsCats".Translate()))
             {
-                list.Label("#" + i.ToString());
-                ignoredRangedAttack[i] = list.TextEntry(ignoredRangedAttack[i]);
-                list.Gap(4f);
+                SectionListConsideredCatsExpanded = !SectionListConsideredCatsExpanded;
             }
+            GUI.color = Color.white;
 
-            list.Gap(10f);
-            if (list.ButtonText("HuntingForMe_SettingsResetIgnoredRangedAttack".Translate()))
-                resetDefaultIgnoredRangedAttack();
-
-            list.Gap(25f);
-            list.GapLine();
-
-
-            //List of entities recognized as a cat
-            list.Label("HuntingForMe_SettingsCats".Translate());
-            list.Gap(10f);
-
-            if (list.ButtonText("+"))
-                cats.Add("");
-
-            if (list.ButtonText("-"))
+            if (SectionListConsideredCatsExpanded)
             {
-                if (cats.Count != 0)
-                    cats.RemoveLast();
-            }
+                //List of entities recognized as a cat
+                list.Label("HuntingForMe_SettingsCats".Translate());
+                list.Gap(10f);
 
-            for (var i = 0; i != cats.Count; i++)
-            {
-                list.Label("#" + i.ToString());
-                cats[i] = list.TextEntry(cats[i]);
-                list.Gap(4f);
-            }
+                if (list.ButtonText("+"))
+                    cats.Add("");
 
-            list.Gap(10f);
-            if (list.ButtonText("HuntingForMe_SettingsResetCats".Translate()))
-                resetCats();
+                if (list.ButtonText("-"))
+                {
+                    if (cats.Count != 0)
+                        cats.RemoveLast();
+                }
+
+                for (var i = 0; i != cats.Count; i++)
+                {
+                    list.Label("#" + i.ToString());
+                    cats[i] = list.TextEntry(cats[i]);
+                    list.Gap(4f);
+                }
+
+                list.Gap(10f);
+                if (list.ButtonText("HuntingForMe_SettingsResetCats".Translate()))
+                    resetCats();
+            }
 
             list.End();
             Widgets.EndScrollView();

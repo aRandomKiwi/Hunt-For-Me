@@ -143,5 +143,6 @@ namespace aRandomKiwi.HFM
         public static readonly Texture2D texIsACat = ContentFinder<Texture2D>.Get("UI/Icons/KFM_IsACat", true);
         public static readonly Texture2D texIgnoredPreys = ContentFinder<Texture2D>.Get("UI/Icons/KFM_IgnoredPreys", true);
         public static readonly Texture2D texMeleeForced = ContentFinder<Texture2D>.Get("UI/Icons/KFM_MeleeForced", true);
+        public static readonly Texture2D texSettings = ContentFinder<Texture2D>.Get("UI/Settings", true);
     }
 }
