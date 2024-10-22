@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
-	<HuntTrained.reportString>Охота TargetA (обученная).</HuntTrained.reportString>
-	<HuntTrainedAssist.reportString>Помогите TargetB охотиться на TargetA.</HuntTrainedAssist.reportString>
-	<HuntForMe_CatGift.reportString>Охота TargetA (подарок).</HuntForMe_CatGift.reportString>
+	<HuntTrained.reportString>Охотиться на TargetA (обученная).</HuntTrained.reportString>
+	<HuntTrainedAssist.reportString>Помочь TargetB в охоте на TargetA.</HuntTrainedAssist.reportString>
+	<HuntForMe_CatGift.reportString>Охотиться на TargetA (подарок).</HuntForMe_CatGift.reportString>
 </LanguageData>
